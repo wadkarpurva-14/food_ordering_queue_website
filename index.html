@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Ordering Queue System</title>
+<style>
+:root{--navy:#172638;--navy2:#22364b;--blue:#2e73e8;--green:#20a765;--orange:#f28b13;--red:#ed454b;--purple:#8537b7;--ink:#192c43;--muted:#64748b;--line:#dce6f2;--bg:#f4f8fc}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.topbar{height:78px;background:linear-gradient(110deg,#182331,#24364b);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:20px}
+.brand{display:flex;align-items:center;gap:14px;font-size:clamp(18px,2.2vw,29px);font-weight:800;letter-spacing:-.6px}.brand-icon{font-size:34px}.brand em{font-style:normal;color:#ffb638}
+.topnav{display:flex;gap:22px}.topnav button{border:0;background:none;color:#eaf0f8;padding:12px 8px;font-size:15px;cursor:pointer;border-bottom:3px solid transparent}.topnav button.active,.topnav button:hover{color:#ffbc3f;border-color:#ffbc3f}
+.hero{min-height:245px;padding:34px clamp(22px,7.5vw,110px);display:flex;align-items:center;justify-content:space-between;gap:28px;background:linear-gradient(90deg,#fff9f0,#f5e6d4);overflow:hidden;position:relative}
+.hero-copy{max-width:510px;z-index:1}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#b86b12;font-weight:800}.hero h1{font-size:clamp(30px,3.3vw,48px);line-height:1.1;letter-spacing:-1.5px;margin:10px 0 14px;color:#12263e}.hero h1 span{color:#f39a22}.hero p{font-size:16px;line-height:1.65;color:#45566d;margin:0;max-width:490px}
+.hero-food{font-size:clamp(75px,10vw,130px);padding-right:5vw;filter:drop-shadow(0 12px 12px #9e6a3440);white-space:nowrap}.hero-note{position:absolute;right:30px;top:20px;color:#aa691f;font-style:italic;font-size:18px;transform:rotate(-7deg)}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:570px}.sidebar{background:linear-gradient(160deg,#1c2b3d,#24384d);padding:25px 16px;color:#fff;display:flex;flex-direction:column;gap:8px}.side-btn{width:100%;display:flex;align-items:center;gap:15px;padding:14px 16px;border:0;border-radius:9px;background:transparent;color:#f1f5f9;text-align:left;font-size:15px;cursor:pointer}.side-btn .ico{font-size:21px;width:24px;text-align:center}.side-btn.active,.side-btn:hover{background:linear-gradient(100deg,#347ff0,#2c6bdb);box-shadow:0 5px 15px #06152c35}.sidebar-note{margin:auto 10px 18px;text-align:center;color:#b7c3d1;font-style:italic;font-size:17px;line-height:1.6}.sidebar-note strong{display:block;font-size:44px;font-style:normal;margin-bottom:8px;opacity:.75}
+main{padding:30px 26px 24px;min-width:0}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.stat{border:1px solid var(--line);border-radius:10px;min-height:132px;padding:17px 15px;display:flex;align-items:center;gap:14px;background:#fff}.stat-icon{width:65px;height:65px;border-radius:50%;display:grid;place-items:center;color:white;font-size:27px;flex-shrink:0}.stat small{font-size:14px;display:block;margin-bottom:8px;color:#334b65}.stat strong{font-size:34px;line-height:1}.stat.green{background:#eaf8f0;border-color:#c7efd8}.stat.green .stat-icon{background:#138650}.stat.green strong{color:#117847}.stat.blue{background:#edf6ff;border-color:#cde5ff}.stat.blue .stat-icon{background:#2479e6}.stat.blue strong{color:#1762c5}.stat.orange{background:#fff3e7;border-color:#ffdfc1}.stat.orange .stat-icon{background:#f28a12}.stat.orange strong{color:#d97706}.stat.purple{background:#f5efff;border-color:#dfd0ff}.stat.purple .stat-icon{background:#8738b8}.stat.purple strong{color:#7427a6}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 21px 21px;box-shadow:0 2px 10px #203c5a05}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.panel h2{font-size:27px;margin:0;letter-spacing:-.7px}.queue-label{color:var(--muted);font-size:13px}
+.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:27px}.action{border:0;border-radius:8px;color:#fff;font-size:14px;font-weight:700;padding:15px 10px;cursor:pointer;transition:transform .15s,filter .15s;box-shadow:0 3px 8px #17263814}.action:hover{transform:translateY(-2px);filter:brightness(1.04)}.action span{font-size:19px;margin-right:9px;vertical-align:-1px}.a-green{background:linear-gradient(100deg,#20a765,#2eae6e)}.a-orange{background:linear-gradient(100deg,#f28b13,#ff990e)}.a-blue{background:linear-gradient(100deg,#3179ed,#2b68d8)}.a-red{background:linear-gradient(100deg,#f04449,#e63d45)}
+.section-title{font-size:19px;font-weight:800;margin:0 0 13px}.table-wrap{border:1px solid var(--line);border-radius:7px;overflow:auto}table{border-collapse:collapse;width:100%;min-width:600px;text-align:left}thead{background:#f0f5fb;color:#4d6481}th{font-size:13px;padding:15px 18px;font-weight:700}td{padding:14px 18px;border-top:1px solid #e7edf5;font-size:14px}tbody tr:hover{background:#fafcff}.pill{display:inline-block;padding:5px 9px;border-radius:99px;font-size:12px;font-weight:700;background:#fff1d9;color:#a35b00}.empty{text-align:center;padding:30px 10px 26px;color:#6c7f98}.empty .dish{font-size:47px;display:block;margin-bottom:8px;opacity:.75}.empty p{margin:0;font-size:14px;font-weight:600}.status{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:#73849a;font-size:12px}
+footer{background:#1b2a3c;color:#d9e3ee;text-align:center;padding:17px;font-size:12px}footer span{color:#ffb638}
+.view{display:none}.view.active{display:block}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-weight:700;font-size:13px;color:#3d5068}.field input,.field select{width:100%;border:1px solid #ced9e6;border-radius:8px;padding:12px 13px;font:inherit;color:var(--ink);background:#fff;outline:none}.field input:focus,.field select:focus{border-color:#4788ef;box-shadow:0 0 0 3px #2e73e81a}.full{grid-column:1/-1}.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}.btn{border:0;border-radius:8px;padding:12px 17px;font-weight:700;cursor:pointer}.btn-primary{background:#2e73e8;color:#fff}.btn-light{background:#edf2f7;color:#334155}.notice{padding:12px 14px;border-radius:8px;background:#fff7e8;color:#8a580c;font-size:13px;margin-bottom:18px}.about-copy{font-size:15px;line-height:1.8;color:#506278;max-width:850px}.about-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:22px}.about-card{background:#f7faff;border:1px solid var(--line);border-radius:9px;padding:18px}.about-card b{display:block;margin-bottom:8px}.toast{position:fixed;right:22px;bottom:22px;background:#172638;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 8px 25px #10203030;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s;z-index:20;max-width:calc(100vw - 44px)}.toast.show{opacity:1;transform:translateY(0)}.modal-backdrop{display:none;position:fixed;inset:0;background:#10203088;z-index:10;align-items:center;justify-content:center;padding:18px}.modal-backdrop.show{display:flex}.modal{background:white;border-radius:14px;width:min(500px,100%);padding:24px;box-shadow:0 20px 70px #0b182944}.modal h2{margin:0 0 7px}.modal p{color:var(--muted);font-size:14px}.modal .field{margin-top:15px}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+@media(max-width:1050px){.layout{grid-template-columns:205px minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{min-height:112px}.hero-food{padding-right:0}.hero-note{display:none}}
+@media(max-width:700px){.topbar{height:auto;min-height:70px;padding:14px 17px;flex-wrap:wrap}.brand{font-size:19px}.brand-icon{font-size:27px}.topnav{width:100%;gap:8px}.topnav button{flex:1;font-size:13px}.hero{min-height:210px;padding:27px 22px}.hero-food{position:absolute;right:10px;bottom:8px;font-size:72px;opacity:.35}.hero-copy{max-width:100%}.hero p{max-width:380px}.layout{display:block}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;gap:7px}.side-btn{padding:11px 9px;font-size:13px;gap:8px}.sidebar-note{display:none}main{padding:17px 12px}.stats{gap:9px}.stat{padding:12px 10px;gap:9px;min-height:100px}.stat-icon{width:43px;height:43px;font-size:20px}.stat small{font-size:11px;margin-bottom:7px}.stat strong{font-size:27px}.panel{padding:16px 12px}.panel h2{font-size:22px}.actions{gap:9px}.action{font-size:12px;padding:13px 7px}.action span{margin-right:4px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.about-grid{grid-template-columns:1fr}.status{gap:10px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-icon">♨</span><span>Food Ordering <em>Queue System</em></span></div>
+  <nav class="topnav" aria-label="Main navigation">
+    <button class="active" data-view="home">⌂ &nbsp; Home</button>
+    <button data-view="orders">☷ &nbsp; Orders</button>
+    <button data-view="about">ⓘ &nbsp; About</button>
+  </nav>
+</header>
+<section class="hero">
+  <div class="hero-copy"><div class="eyebrow">Fast • Fresh • Organized</div><h1>Delicious Food,<br>Ordered <span>Simply!</span></h1><p>Place, manage and process food orders efficiently with a simple first-in, first-out queue system.</p></div>
+  <div class="hero-food" aria-hidden="true">🍔 🍟 🥤</div><div class="hero-note">Good food<br>Good mood ✦</div>
+</section>
+<div class="layout">
+  <aside class="sidebar">
+    <button class="side-btn active" data-view="home"><span class="ico">⌂</span>Home</button>
+    <button class="side-btn" data-view="place"><span class="ico">＋</span>Place Order</button>
+    <button class="side-btn" data-action="process"><span class="ico">⚙</span>Process Order</button>
+    <button class="side-btn" data-view="orders"><span class="ico">☷</span>View Pending Orders</button>
+    <button class="side-btn" data-view="about"><span class="ico">ⓘ</span>About</button>
+    <div class="sidebar-note"><strong>♧</strong>Fresh Food<br>Fast Service ✦</div>
+  </aside>
+  <main>
+    <section class="view active" id="view-home">
+      <div class="stats">
+        <div class="stat green"><div class="stat-icon">▣</div><div><small>Total Orders Placed</small><strong id="totalCount">0</strong></div></div>
+        <div class="stat blue"><div class="stat-icon">☷</div><div><small>Pending Orders</small><strong id="pendingCount">0</strong></div></div>
+        <div class="stat orange"><div class="stat-icon">✓</div><div><small>Processed Orders</small><strong id="processedCount">0</strong></div></div>
+        <div class="stat purple"><div class="stat-icon">♟</div><div><small>Queue Capacity</small><strong>5</strong></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Food Ordering Queue</h2><span class="queue-label" id="queueLabel">0 of 5 slots used</span></div>
+        <div class="actions">
+          <button class="action a-green" data-view="place"><span>＋</span>Place Order</button>
+          <button class="action a-orange" data-action="process"><span>⚙</span>Process Order</button>
+          <button class="action a-blue" data-view="orders"><span>☷</span>View Pending Orders</button>
+          <button class="action a-red" data-action="reset"><span>↻</span>Clear All (Reset)</button>
+        </div>
+        <h3 class="section-title">Pending Orders</h3>
+        <div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Customer Name</th><th>Food Item</th><th>Quantity</th><th>Status</th></tr></thead><tbody id="pendingTable"></tbody></table><div class="empty" id="pendingEmpty"><span class="dish">♧</span><p>No pending orders at the moment.</p></div></div>
+        <div class="status"><span>Queue discipline: FIFO (First In, First Out)</span><span id="updatedAt">Ready for orders</span></div>
+      </div>
+    </section>
+    <section class="view" id="view-place">
+      <div class="panel">
+        <div class="panel-head"><h2>Place a New Order</h2><span class="queue-label">Queue capacity: 5</span></div>
+        <div class="notice" id="capacityNotice">Orders are processed in the same order they are received. The queue holds up to 5 pending orders.</div>
+        <form id="orderForm">
+          <div class="form-grid">
+            <div class="field"><label for="customerName">Customer name *</label><input id="customerName" name="customerName" placeholder="e.g. Rahul Sharma" maxlength="40" required></div>
+            <div class="field"><label for="foodItem">Food item *</label><select id="foodItem" name="foodItem" required><option value="">Choose a food item</option><option>Classic Burger</option><option>Margherita Pizza</option><option>Veg Sandwich</option><option>French Fries</option><option>Paneer Wrap</option><option>Masala Dosa</option><option>Veg Biryani</option><option>Pasta Alfredo</option><option>Cold Coffee</option><option>Custom item</option></select></div>
+            <div class="field full" id="customWrap" style="display:none"><label for="customFood">Custom food item *</label><input id="customFood" maxlength="40" placeholder="Enter food item name"></div>
+            <div class="field"><label for="quantity">Quantity *</label><input id="quantity" type="number" min="1" max="99" value="1" required></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-light" type="reset">Reset Form</button><button class="btn btn-primary" type="submit">＋ &nbsp; Add to Queue</button></div>
+        </form>
+      </div>
+    </section>
+    <section class="view" id="view-orders">
+      <div class="panel">
+        <div class="panel-head"><h2>Pending Orders</h2><span class="queue-label" id="ordersQueueLabel">0 orders waiting</span></div>
+        <p class="about-copy" style="margin-top:0">Orders are listed from oldest to newest. Select “Process Order” to complete the order at the front of the queue.</p>
+        <div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Customer Name</th><th>Food Item</th><th>Quantity</th><th>Status</th></tr></thead><tbody id="ordersTable"></tbody></table><div class="empty" id="ordersEmpty"><span class="dish">♧</span><p>No pending orders at the moment.</p></div></div>
+        <div class="form-actions"><button class="btn btn-primary" data-action="process">⚙ &nbsp; Process Next Order</button></div>
+      </div>
+      <div class="panel" style="margin-top:18px"><div class="panel-head"><h2>Recently Processed</h2><span class="queue-label">Latest first</span></div><div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Customer Name</th><th>Food Item</th><th>Quantity</th><th>Status</th></tr></thead><tbody id="processedTable"></tbody></table><div class="empty" id="processedEmpty"><span class="dish">✓</span><p>No completed orders yet.</p></div></div></div>
+    </section>
+    <section class="view" id="view-about">
+      <div class="panel"><div class="panel-head"><h2>About the Queue System</h2></div>
+        <p class="about-copy">This Food Ordering Queue System is a small browser-based project inspired by a C program using a circular queue. It helps a restaurant accept orders, maintain the order sequence, and process the oldest waiting order first.</p>
+        <div class="about-grid"><div class="about-card"><b>＋ Enqueue</b><p class="about-copy">Place a new order at the rear of the queue.</p></div><div class="about-card"><b>⚙ Dequeue</b><p class="about-copy">Process and remove the order at the front.</p></div><div class="about-card"><b>↻ Circular queue</b><p class="about-copy">Freed queue slots can be reused. Maximum pending orders: 5.</p></div></div>
+        <h3>How it works</h3><ol class="about-copy"><li>Enter the customer's name, food item, and quantity.</li><li>The order is added to the end of the pending queue.</li><li>Process Order completes the oldest pending order.</li><li>Order counts and the pending list update automatically.</li></ol>
+        <div class="notice">Demo note: orders are saved in this browser using local storage. This is a front-end demo, not a live online ordering or payment service.</div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer>© 2026 Food Ordering Queue System &nbsp; | &nbsp; Made with <span>♥</span> for food lovers</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal-backdrop" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetTitle"><div class="modal"><h2 id="resetTitle">Clear all orders?</h2><p>This will remove pending and processed orders from this browser. This action cannot be undone.</p><div class="modal-actions"><button class="btn btn-light" id="cancelReset">Cancel</button><button class="btn" style="background:#ed454b;color:white" id="confirmReset">Clear all</button></div></div></div>
+<script>
+(() => {
+  const CAPACITY = 5;
+  const STORAGE_KEY = 'foodQueueWebsite.v1';
+  let state = { nextId: 1, pending: [], processed: [] };
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function load() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved && Array.isArray(saved.pending) && Array.isArray(saved.processed)) state = saved;
+    } catch (_) {}
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+  }
+  function showToast(message) {
+    const toast = $('toast'); toast.textContent = message; toast.classList.add('show');
+    clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+  function row(order, status) {
+    return `<tr><td><strong>#${order.id}</strong></td><td>${esc(order.name)}</td><td>${esc(order.food)}</td><td>${order.quantity}</td><td><span class="pill" style="${status==='Processed'?'background:#dcfce7;color:#166534':''}">${status}</span></td></tr>`;
+  }
+  function fillTable(tbodyId, emptyId, list, status) {
+    $(tbodyId).innerHTML = list.map(o => row(o,status)).join('');
+    $(emptyId).style.display = list.length ? 'none' : 'block';
+    $(tbodyId).parentElement.style.display = 'table';
+  }
+  function render() {
+    $('totalCount').textContent = state.pending.length + state.processed.length;
+    $('pendingCount').textContent = state.pending.length;
+    $('processedCount').textContent = state.processed.length;
+    $('queueLabel').textContent = `${state.pending.length} of ${CAPACITY} slots used`;
+    $('ordersQueueLabel').textContent = `${state.pending.length} order${state.pending.length===1?'':'s'} waiting`;
+    $('capacityNotice').textContent = state.pending.length >= CAPACITY ? 'Queue is full. Process an order before accepting another one.' : `There ${CAPACITY-state.pending.length===1?'is':'are'} ${CAPACITY-state.pending.length} slot${CAPACITY-state.pending.length===1?'':'s'} available. Orders are processed FIFO.`;
+    fillTable('pendingTable','pendingEmpty',state.pending,'Pending');
+    fillTable('ordersTable','ordersEmpty',state.pending,'Pending');
+    fillTable('processedTable','processedEmpty',[...state.processed].reverse().slice(0,10),'Processed');
+    $('updatedAt').textContent = 'Updated just now';
+    save();
+  }
+  function navigate(view) {
+    document.querySelectorAll('.view').forEach(el => el.classList.toggle('active', el.id === `view-${view}`));
+    document.querySelectorAll('[data-view]').forEach(el => el.classList.toggle('active', el.dataset.view === view));
+    if (view === 'orders') render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function processOrder() {
+    if (!state.pending.length) { showToast('There are no pending orders to process.'); return; }
+    const order = state.pending.shift();
+    state.processed.push({...order, completedAt: new Date().toISOString()});
+    render(); showToast(`Order #${order.id} for ${order.name} has been processed.`);
+  }
+  document.querySelectorAll('[data-view]').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.view)));
+  document.querySelectorAll('[data-action="process"]').forEach(btn => btn.addEventListener('click', processOrder));
+  document.querySelectorAll('[data-action="reset"]').forEach(btn => btn.addEventListener('click', () => $('resetModal').classList.add('show')));
+  $('cancelReset').addEventListener('click', () => $('resetModal').classList.remove('show'));
+  $('resetModal').addEventListener('click', e => { if(e.target === $('resetModal')) $('resetModal').classList.remove('show'); });
+  $('confirmReset').addEventListener('click', () => {
+    state = {nextId:1,pending:[],processed:[]}; save(); render();
+    $('resetModal').classList.remove('show'); showToast('All orders have been cleared.');
+  });
+  $('foodItem').addEventListener('change', () => {
+    const custom = $('foodItem').value === 'Custom item';
+    $('customWrap').style.display = custom ? 'flex' : 'none';
+    $('customFood').required = custom;
+  });
+  $('orderForm').addEventListener('reset', () => setTimeout(() => { $('customWrap').style.display='none'; $('customFood').required=false; },0));
+  $('orderForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (state.pending.length >= CAPACITY) { showToast('Queue is full. Process an order first.'); return; }
+    const name = $('customerName').value.trim();
+    const food = $('foodItem').value === 'Custom item' ? $('customFood').value.trim() : $('foodItem').value;
+    const quantity = Number($('quantity').value);
+    if (!name || !food || !Number.isInteger(quantity) || quantity < 1 || quantity > 99) { showToast('Please check the order details.'); return; }
+    state.pending.push({id:state.nextId++,name,food,quantity,createdAt:new Date().toISOString()});
+    render(); e.target.reset(); navigate('home'); showToast('Order added to the queue successfully.');
+  });
+  load(); render();
+})();
+</script>
+</body>
+</html>
